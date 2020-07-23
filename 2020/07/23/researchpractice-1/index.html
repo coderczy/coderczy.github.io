@@ -14,14 +14,14 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="1.实验分析此次实验需要在大量的GPS轨迹数据（94162条）中有效挖掘出给定空间区域下用户的兴趣点位置。我们的方法首先将一条轨迹划分为一组线段集合，即平稳子轨迹，那些冗余的包含少量信息的GPS点被忽略不计。然后，我们对划分后轨迹中的端点进行聚类，其结果用以检测用户的个性化兴趣点。 1.1轨迹划分本次实验用 opening window 算法进轨迹划分。opening window 算法原本是用于">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/p1.png">
-<meta property="og:image" content="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/pp.png">
-<meta property="og:image" content="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/p2.png">
+<meta property="og:image" content="http://yoursite.com/.com//p1.png">
+<meta property="og:image" content="http://yoursite.com/.com//pp.png">
+<meta property="og:image" content="http://yoursite.com/.com//p2.png">
 <meta property="article:published_time" content="2020-07-23T09:02:47.000Z">
-<meta property="article:modified_time" content="2020-07-23T09:29:39.496Z">
+<meta property="article:modified_time" content="2020-07-23T09:48:09.340Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/p1.png">
+<meta name="twitter:image" content="http://yoursite.com/.com//p1.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -93,16 +93,18 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="1-实验分析"><a href="#1-实验分析" class="headerlink" title="1.实验分析"></a>1.实验分析</h1><p>此次实验需要在大量的GPS轨迹数据（94162条）中有效挖掘出给定空间区域下用户的兴趣点位置。我们的方法首先将一条轨迹划分为一组线段集合，即平稳子轨迹，那些冗余的包含少量信息的GPS点被忽略不计。然后，我们对划分后轨迹中的端点进行聚类，其结果用以检测用户的个性化兴趣点。</p>
-<h2 id="1-1轨迹划分"><a href="#1-1轨迹划分" class="headerlink" title="1.1轨迹划分"></a>1.1轨迹划分</h2><p>本次实验用 opening window 算法进轨迹划分。opening window 算法原本是用于压缩轨迹数据，其思想是按照偏移大小来储存轨迹点，以保存轨迹的空间特征，如图 1 所示。本文将原本储存的特征点 作为子轨迹的起止点，具体算法步骤如下：选取轨迹数据中 第一个点作为起始点，第三个点设为判断点。a)计算所有位 于起始点和判断点之间的轨迹点到起始点与判断点之间的垂 直距离；b)如果所有距离都小于给定阈值，则判断沿轨迹方 向向后推移一个，返回步骤 a)；c)若出现偏移距离大于阈值的点，则存储该点，且该点设为起始点，其后的第三个点作 为判断点，返回步骤 a)。环结束后，所存储的点构成的子轨迹，即为划分后的轨迹。<br><img src="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/p1.png" alt="图1"></p>
+<h2 id="1-1轨迹划分"><a href="#1-1轨迹划分" class="headerlink" title="1.1轨迹划分"></a>1.1轨迹划分</h2><p>本次实验用 opening window 算法进轨迹划分。opening window 算法原本是用于压缩轨迹数据，其思想是按照偏移大小来储存轨迹点，以保存轨迹的空间特征，如图 1 所示。本文将原本储存的特征点 作为子轨迹的起止点，具体算法步骤如下：选取轨迹数据中 第一个点作为起始点，第三个点设为判断点。a)计算所有位 于起始点和判断点之间的轨迹点到起始点与判断点之间的垂 直距离；b)如果所有距离都小于给定阈值，则判断沿轨迹方 向向后推移一个，返回步骤 a)；c)若出现偏移距离大于阈值的点，则存储该点，且该点设为起始点，其后的第三个点作 为判断点，返回步骤 a)。环结束后，所存储的点构成的子轨迹，即为划分后的轨迹。<br><img src="/.com//p1.png" alt="图1"></p>
 <h2 id="1-2特征点聚类"><a href="#1-2特征点聚类" class="headerlink" title="1.2特征点聚类"></a>1.2特征点聚类</h2><p>我们把上一节划分后的所有子轨迹的端点统称为特征点。我们采用SLPA(Speaker-Listenner Label Propagation Algorithm)算法对这些特征点进行聚类。<br>SLPA算法思想如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入参数：图G，迭代次数T，满足社区次数要求的阈值r</span><br><span class="line">输出参数：每一个节点的社区分布</span><br><span class="line">（1）首先，每一个节点的存储器中初始化一个唯一的标签。</span><br><span class="line">（2）然后，重复进行以下步骤，直到达到最大迭代T：</span><br><span class="line">　　a.选择一个节点作为监听器；</span><br><span class="line">　　b.所选节点的每个邻居随机选择概率正比于该标签在其存储器中的出现频率的标签，把所选择的标签（speakervote）发送到听众（listener）;</span><br><span class="line">　　c.监听器增加接收到的最流行的标签到内存。</span><br><span class="line">（3）最后，根据在存储器里的标签和阈值r，后处理被用于输出社区。</span><br></pre></td></tr></table></figure>
-<p>在使用SLPA算法前，我们以所有特征点为结点构造一个无向完全图G。图G各边的权重表达式如下:<br><img src="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/pp.png" alt="表达式"><br>其中，dij表示任意两个节点的欧氏距离，权重 wij受控于参数σ。<br>为更贴近实际，在算法第（2）步b中，我们在听众收到邻居标签后，把该标签在它们存储器中出现的频次加上听众与邻居间的权值，而不是简单的加1。</p>
-<h1 id="2-实验结果"><a href="#2-实验结果" class="headerlink" title="2.实验结果"></a>2.实验结果</h1><p>根据前面的实验分析，我们使用Java对GPS数据集进行轨迹划分，将划分后的结果存入result.txt文件中。然后用Python实现SLPA算法，并对result.txt中的轨迹点聚类，结果用matplotlib工具画出，如图2所示。<br><img src="https://github.com/coderczy/coderczy.github.io/blob/master/2020/07/23/researchpractice-1/p2.png" alt="图2"><br>在图中，使用不同颜色表示了不同的社区，其中‘×’表示每个社区的质心。我们认为这些质心就表示用户轨迹中的兴趣点。根据经纬度可以查出这些兴趣点分布在银川、平凉、咸阳、西安等地。</p>
+<p>在使用SLPA算法前，我们以所有特征点为结点构造一个无向完全图G。图G各边的权重表达式如下:<br><img src="/.com//pp.png" alt="表达式"></p>
+<p>其中，dij表示任意两个节点的欧氏距离，权重 wij受控于参数σ。<br>为更贴近实际，在算法第（2）步b中，我们在听众收到邻居标签后，把该标签在它们存储器中出现的频次加上听众与邻居间的权值，而不是简单的加1。</p>
+<h1 id="2-实验结果"><a href="#2-实验结果" class="headerlink" title="2.实验结果"></a>2.实验结果</h1><p>根据前面的实验分析，我们使用Java对GPS数据集进行轨迹划分，将划分后的结果存入result.txt文件中。然后用Python实现SLPA算法，并对result.txt中的轨迹点聚类，结果用matplotlib工具画出，如图2所示。<br><img src="/.com//p2.png" alt="图2"></p>
+<p>在图中，使用不同颜色表示了不同的社区，其中‘×’表示每个社区的质心。我们认为这些质心就表示用户轨迹中的兴趣点。根据经纬度可以查出这些兴趣点分布在银川、平凉、咸阳、西安等地。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/07/23/researchpractice-1/" data-id="ckcyli8oj0003b4spcd47421n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/07/23/researchpractice-1/" data-id="ckcym5hrn000398spgjpn26f6" class="article-share-link">Share</a>
       
       
     </footer>
