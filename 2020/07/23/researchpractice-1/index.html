@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>researchpractice-1 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="#科研实践-1  在轨迹数据集上跑通SLPA算法##1.实验分析此次实验需要在大量的GPS轨迹数据（94162条）中有效挖掘出给定空间区域下用户的兴趣点位置。我们的方法首先将一条轨迹划分为一组线段集合，即平稳子轨迹，那些冗余的包含少量信息的GPS点被忽略不计。然后，我们对划分后轨迹中的端点进行聚类，其结果用以检测用户的个性化兴趣点。###1.1轨迹划分本次实验用 opening window 算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="researchpractice-1">
+<meta property="og:url" content="http://yoursite.com/2020/07/23/researchpractice-1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="#科研实践-1  在轨迹数据集上跑通SLPA算法##1.实验分析此次实验需要在大量的GPS轨迹数据（94162条）中有效挖掘出给定空间区域下用户的兴趣点位置。我们的方法首先将一条轨迹划分为一组线段集合，即平稳子轨迹，那些冗余的包含少量信息的GPS点被忽略不计。然后，我们对划分后轨迹中的端点进行聚类，其结果用以检测用户的个性化兴趣点。###1.1轨迹划分本次实验用 opening window 算法">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-23T08:36:39.750Z">
+<meta property="article:modified_time" content="2020-07-23T08:54:20.479Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-researchpractice-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/07/23/researchpractice-1/" class="article-date">
+  <time datetime="2020-07-23T08:36:39.750Z" itemprop="datePublished">2020-07-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      researchpractice-1
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#科研实践-1  在轨迹数据集上跑通SLPA算法<br>##1.实验分析<br>此次实验需要在大量的GPS轨迹数据（94162条）中有效挖掘出给定空间区域下用户的兴趣点位置。我们的方法首先将一条轨迹划分为一组线段集合，即平稳子轨迹，那些冗余的包含少量信息的GPS点被忽略不计。然后，我们对划分后轨迹中的端点进行聚类，其结果用以检测用户的个性化兴趣点。<br>###1.1轨迹划分<br>本次实验用 opening window 算法进轨迹划分。opening window 算法原本是用于压缩轨迹数据，其思想是按照偏移大小来储存轨迹点，以保存轨迹的空间特征，如图 1 所示。本文将原本储存的特征点 作为子轨迹的起止点，具体算法步骤如下：选取轨迹数据中 第一个点作为起始点，第三个点设为判断点。a)计算所有位 于起始点和判断点之间的轨迹点到起始点与判断点之间的垂 直距离；b)如果所有距离都小于给定阈值，则判断沿轨迹方 向向后推移一个，返回步骤 a)；c)若出现偏移距离大于阈值的点，则存储该点，且该点设为起始点，其后的第三个点作 为判断点，返回步骤 a)。环结束后，所存储的点构成的子轨迹，即为划分后的轨迹。<br><img src="" alt="图1"><br>###1.2特征点聚类<br>我们把上一节划分后的所有子轨迹的端点统称为特征点。我们采用SLPA(Speaker-Listenner Label Propagation Algorithm)算法对这些特征点进行聚类。<br>SLPA算法思想如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入参数：图G，迭代次数T，满足社区次数要求的阈值r</span><br><span class="line">输出参数：每一个节点的社区分布</span><br><span class="line">（1）首先，每一个节点的存储器中初始化一个唯一的标签。</span><br><span class="line">（2）然后，重复进行以下步骤，直到达到最大迭代T：</span><br><span class="line">　　a.选择一个节点作为监听器；</span><br><span class="line">　　b.所选节点的每个邻居随机选择概率正比于该标签在其存储器中的出现频率的标签，把所选择的标签（speakervote）发送到听众（listener）;</span><br><span class="line">　　c.监听器增加接收到的最流行的标签到内存。</span><br><span class="line">（3）最后，根据在存储器里的标签和阈值r，后处理被用于输出社区。</span><br></pre></td></tr></table></figure>
+<p>在使用SLPA算法前，我们以所有特征点为结点构造一个无向完全图G。图G各边的权重表达式如下:<br><img src="" alt="表达式"><br>其中，dij表示任意两个节点的欧氏距离，权重 wij受控于参数σ。<br>为更贴近实际，在算法第（2）步b中，我们在听众收到邻居标签后，把该标签在它们存储器中出现的频次加上听众与邻居间的权值，而不是简单的加1。<br>##2.实验结果<br>根据前面的实验分析，我们使用Java对GPS数据集进行轨迹划分，将划分后的结果存入result.txt文件中。然后用Python实现SLPA算法，并对result.txt中的轨迹点聚类，结果用matplotlib工具画出，如图2所示。<br><img src="" alt="图2"><br>在图中，使用不同颜色表示了不同的社区，其中‘×’表示每个社区的质心。我们认为这些质心就表示用户轨迹中的兴趣点。根据经纬度可以查出这些兴趣点分布在银川、平凉、咸阳、西安等地。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/07/23/researchpractice-1/" data-id="ckcykfb5v0001aosp03lk2xmi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/01/leetcode974/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">leetcode974</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/07/23/researchpractice-1/">researchpractice-1</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/01/leetcode974/">leetcode974</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/31/myfirstblog/">myfirstblog</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/30/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
