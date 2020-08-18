@@ -12,18 +12,20 @@
     
     <meta name="keywords" content="数据结构与算法" />
     
-    <meta name="description" content="概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。 KMP算法分析">
+    <meta name="description" content="概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。 KMP算法分析造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必">
 <meta property="og:type" content="article">
 <meta property="og:title" content="字符串模式匹配KMP算法">
 <meta property="og:url" content="http://yoursite.com/2020/08/17/kmp/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。 KMP算法分析">
+<meta property="og:description" content="概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。 KMP算法分析造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/08/17/kmp/kmp.png">
 <meta property="article:published_time" content="2020-08-17T08:10:51.000Z">
-<meta property="article:modified_time" content="2020-08-17T08:24:17.487Z">
+<meta property="article:modified_time" content="2020-08-18T13:50:34.036Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/08/17/kmp/kmp.png">
     
 
     
@@ -181,7 +183,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2020/08/17/kmp/" class="article-date">
-     <time datetime="2020-08-17T08:24:17.487Z" itemprop="dateModified">2020-08-17</time>
+     <time datetime="2020-08-18T13:50:34.036Z" itemprop="dateModified">2020-08-18</time>
   </a>
 </div>
 
@@ -209,15 +211,21 @@
             
 
             <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>给定两个字符串S和T，在主串S中寻找子串T的过程称为 <strong><em>模式匹配(pattern matching)</em></strong> ，T称为 <strong><em>模式(pattern)</em></strong> 。<br><strong><em>BF算法:</em></strong> 暴力，带回溯，简单但效率较低。<br><strong><em>KMP算法:</em></strong> 对BF做了很大改进，基本思想是主串不回溯。</p>
-<h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong><em>分析</em></strong></p>
-
+<h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong><em>分析</em></strong><br>造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必要的。<br>我们希望，某趟在S[i]和T[j]匹配失败后，下标i不回溯（主串不回溯），下标j回溯至某个位置k，使得T[k]对准S[i]继续比较。那么，如何确定位置k呢？<br>看下面这幅图：<br><img src="/2020/08/17/kmp/kmp.png" alt><br>观察部分匹配成功时的特征，某趟在S[i]和T[j]匹配失败后下一趟比较从S[i]和T[k]开始，则有T[0] ~ T[k-1] = S[i-k] ~ s[i-1]成立，如图b所示；<br>在部分匹配成功时，有T[j-k] ~ T[j-1] = S[i-k] ~ S[i-1]成立，如图a所示。<br>由T[0]~T[k-1]=S[i-k] ~ s[i-1]和T[j-k] ~ T[j-1]=S[i-k] ~ S[i-1]，可得：</p>
+<center>T[0] ~ T[k-1] = T[j-k] ~ T[j-1]</center>
+上式说明，模式中每一个字符T[j]都对应一个k值，这个 $\color{red}{k值仅依赖于模式本身字符序列的构成，与主串无关}$。
+用next[j]表示T[j]对应的k值(0 <= j < m)，其定义如下： $$ l(y,f(x))="\begin{cases}" 0, & \text{y="f(X)}" \\ 1, $\neq$ f(x)} \end{cases} <p>KMP算法伪代码描述如下：<p></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.在串S和串T中分别设置比较的起始下标i和j；</span><br><span class="line">2.重复下述操作，直到S或T的所有字符均比较完毕：</span><br><span class="line">  2.1如果S[i]等于T[j]，继续比较S和T的下一对字符；</span><br><span class="line">  2.2否则将下标j回溯到next[j]位置，即j &#x3D; next[j]；</span><br><span class="line">  2.3如果j &#x3D; -1，则将下标i和j分别加1，准备下一趟比较；</span><br><span class="line">3.如果T中所有字符均比较完毕，则返回匹配开始的位置；</span><br><span class="line">  否则返回0；</span><br></pre></td></tr></table></figure>
+<p>求next数组的代码：</p>
+<pre><code class="java"></code></pre>
+</=>
         </div>
         <footer class="article-footer">
             
 
 
 
-    <a data-url="http://yoursite.com/2020/08/17/kmp/" data-id="ckdzbr8zp0000yssp3wal4hye" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://yoursite.com/2020/08/17/kmp/" data-id="cke009fek0004vosph1wr5x1i" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -288,17 +296,16 @@
             "name": "John Doe"
         },
         "headline": "字符串模式匹配KMP算法",
-        "image": "http://yoursite.com",
+        "image": "http://yoursite.com/2020/08/17/kmp/kmp.png",
         "keywords": "数据结构与算法",
         "genre": "",
         "datePublished": "2020-08-17",
         "dateCreated": "2020-08-17",
-        "dateModified": "2020-08-17",
+        "dateModified": "2020-08-18",
         "url": "http://yoursite.com/2020/08/17/kmp/",
         "description": "概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。
-KMP算法分析
-",
-        "wordCount": 16
+KMP算法分析造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必",
+        "wordCount": 89
     }
 </script>
 
@@ -437,7 +444,7 @@ KMP算法分析
                             <a href="/2020/08/17/kmp/" class="thumbnail">
     
     
-        <span class="thumbnail-image thumbnail-none"></span>
+        <span style="background-image:url(/2020/08/17/kmp/kmp.png)" alt="字符串模式匹配KMP算法" class="thumbnail-image"></span>
     
     
 </a>
