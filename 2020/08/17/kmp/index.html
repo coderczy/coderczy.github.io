@@ -21,7 +21,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/2020/08/17/kmp/kmp.png">
 <meta property="article:published_time" content="2020-08-17T08:10:51.000Z">
-<meta property="article:modified_time" content="2020-08-18T13:50:34.036Z">
+<meta property="article:modified_time" content="2020-08-19T02:22:58.079Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="数据结构与算法">
 <meta name="twitter:card" content="summary">
@@ -183,7 +183,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2020/08/17/kmp/" class="article-date">
-     <time datetime="2020-08-18T13:50:34.036Z" itemprop="dateModified">2020-08-18</time>
+     <time datetime="2020-08-19T02:22:58.079Z" itemprop="dateModified">2020-08-19</time>
   </a>
 </div>
 
@@ -213,19 +213,19 @@
             <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>给定两个字符串S和T，在主串S中寻找子串T的过程称为 <strong><em>模式匹配(pattern matching)</em></strong> ，T称为 <strong><em>模式(pattern)</em></strong> 。<br><strong><em>BF算法:</em></strong> 暴力，带回溯，简单但效率较低。<br><strong><em>KMP算法:</em></strong> 对BF做了很大改进，基本思想是主串不回溯。</p>
 <h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong><em>分析</em></strong><br>造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必要的。<br>我们希望，某趟在S[i]和T[j]匹配失败后，下标i不回溯（主串不回溯），下标j回溯至某个位置k，使得T[k]对准S[i]继续比较。那么，如何确定位置k呢？<br>看下面这幅图：<br><img src="/2020/08/17/kmp/kmp.png" alt><br>观察部分匹配成功时的特征，某趟在S[i]和T[j]匹配失败后下一趟比较从S[i]和T[k]开始，则有T[0] ~ T[k-1] = S[i-k] ~ s[i-1]成立，如图b所示；<br>在部分匹配成功时，有T[j-k] ~ T[j-1] = S[i-k] ~ S[i-1]成立，如图a所示。<br>由T[0]~T[k-1]=S[i-k] ~ s[i-1]和T[j-k] ~ T[j-1]=S[i-k] ~ S[i-1]，可得：</p>
 <center>T[0] ~ T[k-1] = T[j-k] ~ T[j-1]</center>
-上式说明，模式中每一个字符T[j]都对应一个k值，这个 $\color{red}{k值仅依赖于模式本身字符序列的构成，与主串无关}$。
-用next[j]表示T[j]对应的k值(0 <= j < m)，其定义如下： $$ l(y,f(x))="\begin{cases}" 0, & \text{y="f(X)}" \\ 1, $\neq$ f(x)} \end{cases} <p>KMP算法伪代码描述如下：<p></p>
+上式说明，模式中每一个字符T[j]都对应一个k值，这个<label style="color: red">k值仅依赖于模式本身字符序列的构成，与主串无关</label>。
+用next[j]表示T[j]对应的k值(0 <= j < m)，其定义如下： <p><img src="/2020/08/17/kmp/next.png" alt><p></p>
+<p>KMP算法伪代码描述如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1.在串S和串T中分别设置比较的起始下标i和j；</span><br><span class="line">2.重复下述操作，直到S或T的所有字符均比较完毕：</span><br><span class="line">  2.1如果S[i]等于T[j]，继续比较S和T的下一对字符；</span><br><span class="line">  2.2否则将下标j回溯到next[j]位置，即j &#x3D; next[j]；</span><br><span class="line">  2.3如果j &#x3D; -1，则将下标i和j分别加1，准备下一趟比较；</span><br><span class="line">3.如果T中所有字符均比较完毕，则返回匹配开始的位置；</span><br><span class="line">  否则返回0；</span><br></pre></td></tr></table></figure>
 <p>求next数组的代码：</p>
-<pre><code class="java"></code></pre>
-</=>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_next_arr</span><span class="params">(<span class="keyword">char</span>* t, <span class="keyword">int</span>* next)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// next[i]的求解方法是，找到从t[0]~t[i-1]的公共最长匹配前缀和后缀的长度</span></span><br><span class="line">	next[<span class="number">0</span>]=<span class="number">-1</span>;  <span class="comment">// next[0]定义为-1</span></span><br><span class="line">	next[<span class="number">1</span>]=<span class="number">0</span>;	 <span class="comment">// next[1]肯定是0</span></span><br><span class="line">	<span class="comment">// 只要待匹配串还没到底，都要求相应位的next[i]值</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>;t[i] != <span class="string">'\0'</span>;i++) </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> max_len=i<span class="number">-1</span>;		<span class="comment">// 最长长度为i-1</span></span><br><span class="line">		<span class="keyword">int</span> len,j;</span><br><span class="line">		<span class="keyword">for</span> (len = max_len;len &gt;= <span class="number">1</span>;len--)  <span class="comment">// 从最长的情况开始搜索</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span> (j = <span class="number">0</span>;j &lt; len;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(t[j]!=t[j+i-len])  <span class="comment">// 只要有任何一位不对应相等，那么当前len就不成立，试探下一个len </span></span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 如果上一个循环是正常退出，即都对应相等了，那就把当前的len赋给next[i],并不再往下试探了</span></span><br><span class="line">			<span class="keyword">if</span>(j==len)  </span><br><span class="line">			&#123;</span><br><span class="line">				next[i]=len;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (len &lt; <span class="number">1</span>)  <span class="comment">// 如果len=1的情况都不成立，那next[i]肯定是0了</span></span><br><span class="line">		&#123;</span><br><span class="line">			next[i]=<span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></=>
         </div>
         <footer class="article-footer">
             
 
 
 
-    <a data-url="http://yoursite.com/2020/08/17/kmp/" data-id="cke009fek0004vosph1wr5x1i" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://yoursite.com/2020/08/17/kmp/" data-id="cke0r4y2e0000x4sp9du10rvn" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -301,11 +301,11 @@
         "genre": "",
         "datePublished": "2020-08-17",
         "dateCreated": "2020-08-17",
-        "dateModified": "2020-08-18",
+        "dateModified": "2020-08-19",
         "url": "http://yoursite.com/2020/08/17/kmp/",
         "description": "概念给定两个字符串S和T，在主串S中寻找子串T的过程称为 模式匹配(pattern matching) ，T称为 模式(pattern) 。BF算法: 暴力，带回溯，简单但效率较低。KMP算法: 对BF做了很大改进，基本思想是主串不回溯。
 KMP算法分析造成BF算法效率低的原因是回溯，即在某趟匹配失败后，对于主串S要回溯到本趟匹配开始字符的下一个字符，模式T要回溯到第一个字符，而这些回溯往往是不必",
-        "wordCount": 89
+        "wordCount": 232
     }
 </script>
 
