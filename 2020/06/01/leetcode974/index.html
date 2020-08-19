@@ -20,7 +20,7 @@
 <meta property="og:description" content="题目给定一个整数数组 A，返回其中元素之和可被 K 整除的（连续、非空）子数组的数目。 示例： 输入：A &#x3D; [4,5,0,-2,-3,1], K &#x3D; 5 输出：7 解释： 有 7 个子数组满足其元素之和可被 K &#x3D; 5 整除： [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]提示： 1 &amp;l">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-01T08:36:08.000Z">
-<meta property="article:modified_time" content="2020-08-19T02:32:10.526Z">
+<meta property="article:modified_time" content="2020-08-19T02:45:32.096Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -181,7 +181,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2020/06/01/leetcode974/" class="article-date">
-     <time datetime="2020-08-19T02:32:10.526Z" itemprop="dateModified">2020-08-19</time>
+     <time datetime="2020-08-19T02:45:32.096Z" itemprop="dateModified">2020-08-19</time>
   </a>
 </div>
 
@@ -217,20 +217,17 @@
 [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]</code></pre><p>提示：</p>
 <pre><code>1 &lt;= A.length &lt;= 30000
 -10000 &lt;= A[i] &lt;= 10000
-2 &lt;= K &lt;= 10000</code></pre><p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
-<h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>通常，涉及连续子数组问题的时候，我们使用前缀和来解决。</p>
+2 &lt;= K &lt;= 10000</code></pre><h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>通常，涉及连续子数组问题的时候，我们使用前缀和来解决。</p>
 <p>我们令 P[i] = A[0] + A[1] + … + A[i]。那么每个连续子数组的和sum(i, j)就可以写成 P[j] - P[i-1]（其中 0 &lt; i &lt; j）的形式。此时，判断子数组的和能否被 K 整除就等价于判断 (P[j] - P[i-1]) mod K == 0，根据 同余定理，只要 P[j] mod K == P[i-1] mod K，就可以保证上面的等式成立。</p>
-<p>作者：LeetCode-Solution<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/</a><br>来源：力扣（LeetCode）<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
 <p>因此我们可以考虑对数组进行遍历，在遍历同时统计答案。当我们遍历到第 ii 个元素时，我们统计以 ii 结尾的符合条件的子数组个数。我们可以维护一个以前缀和模 KK 的值为键，出现次数为值的哈希表 \textit{record}record，在遍历的同时进行更新。这样在计算以 ii 结尾的符合条件的子数组个数时，根据上面的分析，答案即为 [0..i-1][0..i−1] 中前缀和模 KK 也为 P[i] \bmod KP[i]modK 的位置个数，即 \textit{record}[P[i] \bmod K]record[P[i]modK]。</p>
 <p>最后的答案即为以每一个位置为数尾的符合条件的子数组个数之和。需要注意的一个边界条件是，我们需要对哈希表初始化，记录 \textit{record}[0] = 1record[0]=1，这样就考虑了前缀和本身被 KK 整除的情况。</p>
 <p>注意：不同的语言负数取模的值不一定相同，有的语言为负数，对于这种情况需要特殊处理。</p>
-<p>作者：LeetCode-Solution<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/</a><br>来源：力扣（LeetCode）<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
 <h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><p>1.使用前缀和来解决连续子数组问题。<br>2.同余定理：P[j]%K == P[i-1]%K ===&gt; (P[j]-P[i-1])%K == 0。<br>3.不同的语言负数取模的值不一定相同，有的语言为负数，对于这种情况需要特殊处理。</p>
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">subarraysDivByK</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; A, <span class="keyword">int</span> K)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> n = A.size();</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; record = &#123;&#123;<span class="number">0</span>, <span class="number">1</span>&#125;&#125;;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> a : A) &#123;</span><br><span class="line">            sum += a;</span><br><span class="line">            <span class="comment">//c++负数取余为负，需纠正</span></span><br><span class="line">            <span class="keyword">int</span> mod = (sum%K + K) % K;</span><br><span class="line">            <span class="keyword">if</span>(record.count(mod)) &#123;</span><br><span class="line">                res += record[mod];</span><br><span class="line">            &#125;</span><br><span class="line">            record[mod]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h2 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><p>时间复杂度：O(N)，其中 N 是数组 A 的长度。我们只需要从前往后遍历一次数组，在遍历数组的过程中，维护哈希表的各个操作均为 O(1)，因此总时间复杂度为 O(N)。</p>
 <p>空间复杂度：O(min(N, K))，即哈希表需要的空间。当 N ≤ K 时，最多有 N 个前缀和，因此哈希表中最多有 N+1 个键值对；当 N &gt; K 时，最多有 K 个不同的余数，因此哈希表中最多有 K 个键值对。也就是说，哈希表需要的空间取决于 N 和 K 中的较小值。</p>
-<p>作者：LeetCode-Solution<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/</a><br>来源：力扣（LeetCode）<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<p>本文多参考力扣官方题解：<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/he-ke-bei-k-zheng-chu-de-zi-shu-zu-by-leetcode-sol/</a><br>来源：力扣（LeetCode）</p>
 
         </div>
         <footer class="article-footer">
@@ -238,7 +235,7 @@
 
 
 
-    <a data-url="http://yoursite.com/2020/06/01/leetcode974/" data-id="cke0rjilp0004n0sp3ie84wl5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="http://yoursite.com/2020/06/01/leetcode974/" data-id="cke0rxr7a0008jksp0vwn8yj5" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -324,7 +321,7 @@
 有 7 个子数组满足其元素之和可被 K = 5 整除：
 [4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]提示：
 1 &l",
-        "wordCount": 429
+        "wordCount": 420
     }
 </script>
 
