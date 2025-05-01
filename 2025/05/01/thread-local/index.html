@@ -26,13 +26,11 @@
 <meta property="og:site_name" content="肇源">
 <meta property="og:description" content="一文彻底搞懂ThreadLocal前言&emsp;&emsp;ThreadLocal里的变量是线程之间隔离的，但在线程内部是处处可以访问的。ThreadLocal相当于是给变量在每个线程中创建了独立的副本，每个线程可以访问自己内部的副本。 &emsp;&emsp;作为一名职场小白，看到项目代码中有好多地方都使用了ThreadLocal来传递上下文，心想之前背了好多关于ThreadLocal的八股，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2025/03/19/hello-world/reference.png">
 <meta property="article:published_time" content="2025-04-30T16:06:47.000Z">
-<meta property="article:modified_time" content="2025-05-01T11:48:28.345Z">
+<meta property="article:modified_time" content="2025-05-01T16:01:11.681Z">
 <meta property="article:author" content="caizhaoyuan">
 <meta property="article:tag" content="JAVA多线程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2025/03/19/hello-world/reference.png">
   
   
   
@@ -314,7 +312,7 @@
 <p>&emsp;&emsp;可以看到ThreadLocalMap是定义在ThreadLocal里的一个静态内部类，只能java.lang包内可以访问，主要就是给java.lang.Thread使用。ThreadLocalMap中又定义了自己的Entry类型，它继承了<strong>WeakReference（弱引用）</strong>，Entry中有value属性。从构造方法来看，ThreadLocalMap的key采用了弱引用，这个很关键。</p>
 <h3 id="2-弱引用玄机"><a href="#2-弱引用玄机" class="headerlink" title="2. 弱引用玄机"></a>2. 弱引用玄机</h3><p>&emsp;&emsp;ThreadLocalMap的key为什么采用弱引用呢。首先我们知道弱引用的特性就是：发生gc的时候，当一个对象没有在被其他强引用引用时，它就会被回收。为了更加清晰的说明这个问题，我们画一个引用关系图：</p>
 
-<p><img src="/2025/03/19/hello-world/reference.png" srcset="/img/loading.gif" lazyload alt="ThreadLocal引用关系图"></p>
+
 <p>&emsp;&emsp;从图中我们可以看出，只要当前线程Thread不消亡，它就会一直持有ThreadLocalMap对象的引用。如果B失去对ThreadLocal对象的引用时，如果ThreadLocalMap的key是强引用的话，该ThreadLocal对象将一直无法回收，除非当前线程Thread被销毁。Thread如果是主线程，那ThreadLocal对象将持续整改运行周期，如果是线程池中的线程，短时间内也无法消亡。从而就会引发内存泄露。因此ThreadLocalMap的key采用弱引用就避免了这一问题。</p>
 <h3 id="3-内存泄露"><a href="#3-内存泄露" class="headerlink" title="3. 内存泄露"></a>3. 内存泄露</h3><p>&emsp;&emsp;key为弱引用就可以高枕无忧了吗？实际上还会有内存泄露的风险。B失去了对ThreadLocal对象的引用后，在gc的过程中ThreadLocal对象被回收，此时对应ThreadLocalMap中Entry的key就变成了null值，但value中的变量依旧被强引用，无法被回收。由于key已经是null了，业务代码无法访问到value变量，这就出现了废弃变量无法回收的情况，从而导致内存泄露。如何彻底避免内存泄露呢？</p>
 <p>&emsp;&emsp;将ThreadLocal变量定义成private static，这样就一直存在ThreadLocal的强引用，也就能保证任何时候都能通过ThreadLocal的弱引用访问到Entry的value值。且能保证ThreadLocal实例唯一，不会每次请求都创建一个新的ThreadLocal实例，这样就不会对同一线程变量反复往ThreadLocalMap中塞Entry。</p>
